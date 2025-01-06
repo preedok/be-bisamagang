@@ -1,0 +1,25 @@
+{
+  "name": "be-bisamagang",
+  "version": "1.0.0",
+  "description": "backend-bisamagang",
+  "dev": "nodemon app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon app.js",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/preedok/be-bisamagang.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/preedok/be-bisamagang/issues"
+  },
+  "homepage": "https://github.com/preedok/be-bisamagang#readme",
+  "dependencies": {
+    "express": "^4.21.2",
+    "nodemon": "^3.1.9"
+  }
+}
