@@ -42,20 +42,10 @@ async function addUser(req, res) {
       user: newUser,
     });
   } catch (error) {
-    // More specific error handling
-    if (error.code === "23505") {
-      // PostgreSQL unique violation error code
-      console.log(
-        `[ERROR] Failed to add user: Email/username already registered for ${req.body.email}`
-      );
-      return res.status(409).json({
-        error: "Email or username already registered",
-      });
-    }
-
     console.error("[ERROR] Failed to add user:", error.message);
     res.status(500).json({
       error: "Internal server error",
+      message: "Failed to add user  ",
     });
   }
 }
@@ -63,29 +53,51 @@ async function addUser(req, res) {
 async function deleteUser(req, res) {
   try {
     const { username } = req.params;
-    const result = await usersModels.deleteUser(username);
-    if (!result) {
-      console.log(`[ERROR] Failed to delete user: User ${username} not found`);
+
+    // Validasi username
+    if (!username || username.trim() === "") {
+      console.error("[ERROR] Delete user failed: Username is empty");
+      return res.status(400).json({
+        status: "error",
+        message: "Username is required",
+      });
+    }
+
+    // Cek apakah user exists sebelum delete
+    const existingUser = await usersModels.getUserByUsername(username);
+    if (!existingUser) {
+      console.error(`[ERROR] Delete user failed: User ${username} not found`);
       return res.status(404).json({
         status: "error",
         message: `User ${username} not found`,
       });
     }
 
-    console.log(
-      `User ${username} successfully deleted at ${new Date().toISOString()}`
-    );
+    try {
+      await usersModels.deleteUser(username);
 
-    res.status(200).json({
-      status: "success",
-      message: `User ${username} successfully deleted`,
-      data: result,
-    });
+      console.log(
+        `[SUCCESS] User ${username} successfully deleted at ${new Date().toISOString()}`
+      );
+      return res.status(200).json({
+        status: "success",
+        message: `User ${username} successfully deleted`,
+        data: existingUser,
+      });
+    } catch (dbError) {
+      console.error(
+        `[ERROR] Database error while deleting user ${username}: ${dbError.message}`
+      );
+      return res.status(500).json({
+        status: "error",
+        message: "Failed to delete user due to database error",
+      });
+    }
   } catch (error) {
-    console.error(`Error while deleting user: ${error.message}`);
+    console.error(`[ERROR] Delete user error: ${error.message}`);
     res.status(500).json({
       status: "error",
-      message: error.message,
+      message: "Internal server error",
     });
   }
 }
