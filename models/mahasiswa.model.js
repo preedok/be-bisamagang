@@ -5,6 +5,14 @@ const getAllMahasiswa = async () => {
   return mahasiswa.rows;
 };
 
+const getMahasiswaByNim = async (nim) => {
+  const getMahasiswa = await pool.query(
+    "SELECT * FROM mahasiswa where nim = $1",
+    [nim]
+  );
+  return getMahasiswa.rows[0];
+};
+
 const addMahasiswa = async (mahasiswa) => {
   const newMahasiswa = await pool.query(
     "INSERT INTO mahasiswa (nim, nama, jurusan, semester) VALUES ($1, $2, $3, $4) RETURNING *",
@@ -13,4 +21,17 @@ const addMahasiswa = async (mahasiswa) => {
   return newMahasiswa.rows[0];
 };
 
-module.exports = { getAllMahasiswa, addMahasiswa };
+const deleteMahasiswa = async (nim) => {
+  const deleteMahasiswa = await pool.query(
+    "DELETE FROM mahasiswa where nim = $1",
+    [nim]
+  );
+  return deleteMahasiswa.rows[0];
+};
+
+module.exports = {
+  getAllMahasiswa,
+  getMahasiswaByNim,
+  addMahasiswa,
+  deleteMahasiswa,
+};
