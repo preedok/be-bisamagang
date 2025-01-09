@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const { connectDB } = require("./config/db");
 const userRouter = require("./routes/users.routes");
+const mahasiswaRouter = require("./routes/mahasiswa.routes");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -11,6 +12,7 @@ app.use(express.json());
 
 // Routes
 app.use("/users", userRouter);
+app.use("/mahasiswa", mahasiswaRouter);
 
 // Inisialisasi koneksi database dan server
 const startServer = async () => {
