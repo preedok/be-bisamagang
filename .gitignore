@@ -3,6 +3,9 @@
 /.pnp
 .pnp.js
 /vendor
+flow.txt
+readme.md
+/database
 
 # Testing
 /coverage
