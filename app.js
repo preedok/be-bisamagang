@@ -1,11 +1,32 @@
+require("dotenv").config();
 const express = require("express");
+const { connectDB } = require("./config/db");
+const userRouter = require("./routes/users.routes");
+const mahasiswaRouter = require("./routes/mahasiswa.routes");
+
 const app = express();
-const port = 3000;
+const PORT = process.env.PORT || 3000;
 
-app.get("/", (req, res) => {
-  res.send("Hello World");
-});
+// Middleware
+app.use(express.json());
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+// Routes
+app.use("/users", userRouter);
+app.use("/mahasiswa", mahasiswaRouter);
+
+// Inisialisasi koneksi database dan server
+const startServer = async () => {
+  try {
+    await connectDB();
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error("Failed to start server:", error);
+    process.exit(1);
+  }
+};
+
+startServer();
+
+module.exports = app;
